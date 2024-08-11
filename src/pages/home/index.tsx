@@ -1,5 +1,17 @@
+import Header from '../../components/Header';
+import PostNavigation from '../../components/PostNavigation';
+import PostList from '../../components/PostList';
+import Footer from '../../components/Footer';
+
 function Home() {
-  return <h1>Home</h1>;
+  return (
+    <div>
+      <Header />
+      <PostNavigation />
+      <PostList />
+      <Footer />
+    </div>
+  );
 }
 
 export default Home;
