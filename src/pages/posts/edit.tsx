@@ -1,8 +1,12 @@
+import PostForm from 'components/PostForm';
+import Header from 'components/Header';
+
 function EditPostPage() {
   return (
-    <div>
-      <h1>Edit Post</h1>
-    </div>
+    <>
+      <Header />
+      <PostForm />
+    </>
   );
 }
 
