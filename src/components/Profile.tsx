@@ -1,7 +1,21 @@
+import { signOut } from 'firebase/auth';
 import { auth } from 'firebaseApp';
-import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 function Profile() {
+  const handleClickSignOut = async () => {
+    try {
+      await signOut(auth);
+      toast.success('로그아웃 되었습니다.');
+    } catch (e) {
+      if (e instanceof Error) {
+        toast.error(e.message);
+      } else {
+        console.error(e);
+      }
+    }
+  };
+
   return (
     <div className="profile__box">
       <div className="flex__box-lg">
@@ -13,9 +27,13 @@ function Profile() {
           </div>
         </div>
       </div>
-      <Link to="/" className="profile__logout">
+      <div
+        role="presentation"
+        className="profile__logout"
+        onClick={handleClickSignOut}
+      >
         로그아웃
-      </Link>
+      </div>
     </div>
   );
 }
