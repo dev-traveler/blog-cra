@@ -1,5 +1,15 @@
+import Footer from '../../components/Footer';
+import PostList from '../../components/PostList';
+import Header from '../../components/Header';
+
 function PostListPage() {
-  return <h1>Post List Page</h1>;
+  return (
+    <>
+      <Header />
+      <PostList />
+      <Footer />
+    </>
+  );
 }
 
 export default PostListPage;
