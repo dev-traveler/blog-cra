@@ -1,8 +1,14 @@
+import Footer from '../../components/Footer';
+import Header from '../../components/Header';
+import PostDetail from '../../components/PostDetail';
+
 function PostDetailPage() {
   return (
-    <div>
-      <h1>Post Detail Page</h1>
-    </div>
+    <>
+      <Header />
+      <PostDetail />
+      <Footer />
+    </>
   );
 }
 
