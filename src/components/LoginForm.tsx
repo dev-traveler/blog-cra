@@ -1,10 +1,12 @@
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from 'firebaseApp';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 function LoginForm() {
+  const navigate = useNavigate();
+
   const [error, setError] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -44,6 +46,7 @@ function LoginForm() {
       await signInWithEmailAndPassword(auth, email, password);
 
       toast.success('로그인에 성공했습니다.');
+      navigate('/');
     } catch (e) {
       if (e instanceof Error) {
         toast.error(e.message);
