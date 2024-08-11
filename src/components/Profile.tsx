@@ -1,3 +1,4 @@
+import { auth } from 'firebaseApp';
 import { Link } from 'react-router-dom';
 
 function Profile() {
@@ -6,8 +7,10 @@ function Profile() {
       <div className="flex__box-lg">
         <div className="profile__image" />
         <div>
-          <div className="profile__email">avenj.dev@gmail.com</div>
-          <div className="profile__name">김재현</div>
+          <div className="profile__email">{auth.currentUser?.email}</div>
+          <div className="profile__name">
+            {auth.currentUser?.displayName || '익명의 사용자'}
+          </div>
         </div>
       </div>
       <Link to="/" className="profile__logout">
