@@ -25,8 +25,6 @@ function Router({ isAuthenticated }: RouterProps) {
           <Route path="/posts/edit/:id" element={<EditPostPage />} />
 
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
           <Route path="*" element={<Navigate replace to="/" />} />
         </>
       ) : (
