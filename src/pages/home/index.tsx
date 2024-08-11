@@ -1,7 +1,7 @@
-import Header from '../../components/Header';
-import PostNavigation from '../../components/PostNavigation';
-import PostList from '../../components/PostList';
-import Footer from '../../components/Footer';
+import Header from 'components/Header';
+import PostNavigation from 'components/PostNavigation';
+import PostList from 'components/PostList';
+import Footer from 'components/Footer';
 
 function Home() {
   return (

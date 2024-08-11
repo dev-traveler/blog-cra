@@ -1,8 +1,13 @@
+import Footer from 'components/Footer';
+import Header from 'components/Header';
+
 function NewPostPage() {
   return (
-    <div>
-      <h1>New Post</h1>
-    </div>
+    <>
+      <Header />
+      <div>Post Form</div>
+      <Footer />
+    </>
   );
 }
 
