@@ -5,6 +5,8 @@ import PostDetailPage from '../pages/posts/detail';
 import NewPostPage from '../pages/posts/new';
 import EditPostPage from '../pages/posts/edit';
 import ProfilePage from '../pages/profile';
+import LoginPage from '../pages/login';
+import SignUpPage from '../pages/signup';
 
 function Router() {
   return (
@@ -15,6 +17,8 @@ function Router() {
       <Route path="/posts/new" element={<NewPostPage />} />
       <Route path="/posts/edit/:id" element={<EditPostPage />} />
       <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignUpPage />} />
       <Route path="*" element={<Navigate replace to="/" />} />
     </Routes>
   );
