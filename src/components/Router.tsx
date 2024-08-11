@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
+
 import Home from 'pages/home';
 import PostlistPage from 'pages/posts';
 import PostDetailPage from 'pages/posts/detail';
@@ -9,9 +9,11 @@ import ProfilePage from 'pages/profile';
 import LoginPage from 'pages/login';
 import SignUpPage from 'pages/signup';
 
-function Router() {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+type RouterProps = {
+  isAuthenticated: boolean;
+};
 
+function Router({ isAuthenticated }: RouterProps) {
   return (
     <Routes>
       {isAuthenticated ? (
