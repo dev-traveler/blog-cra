@@ -1,12 +1,12 @@
+import 'react-toastify/dist/ReactToastify.css';
+
 import { useState } from 'react';
 import { auth } from 'firebaseApp';
 import { onAuthStateChanged } from 'firebase/auth';
 import { ToastContainer } from 'react-toastify';
 
-import Router from './components/Router';
-
-import 'react-toastify/dist/ReactToastify.css';
 import Loader from 'components/Loader';
+import Router from 'components/Router';
 
 function App() {
   const [init, setInit] = useState(false);
