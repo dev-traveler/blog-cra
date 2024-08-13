@@ -13,7 +13,14 @@ import { toast } from 'react-toastify';
 
 import { Post } from 'interfaces/Post';
 
-function PostList() {
+type TabType = 'all' | 'my';
+
+interface PostListProps {
+  hasNavigation?: boolean;
+}
+
+function PostList({ hasNavigation = false }: PostListProps) {
+  const [activeTab, setActiveTab] = useState<TabType>('all');
   const [posts, setPosts] = useState<Post[]>([]);
 
   const getPosts = async () => {
@@ -45,6 +52,24 @@ function PostList() {
 
   return (
     <>
+      {hasNavigation && (
+        <div className="post__navigation">
+          <div
+            role="presentation"
+            className={activeTab === 'all' ? 'post__navigation--active' : ''}
+            onClick={() => setActiveTab('all')}
+          >
+            전체
+          </div>
+          <div
+            role="presentation"
+            className={activeTab === 'my' ? 'post__navigation--active' : ''}
+            onClick={() => setActiveTab('my')}
+          >
+            나의 글
+          </div>
+        </div>
+      )}
       <div className="post__list">
         {posts.length === 0 ? (
           <div className="post__no-post">게시글이 없습니다.</div>
