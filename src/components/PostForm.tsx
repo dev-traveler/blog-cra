@@ -6,6 +6,14 @@ import { toast } from 'react-toastify';
 
 import { Post } from 'interfaces/Post';
 
+const getCurrentFormattedDate = () => {
+  return new Date().toLocaleDateString('ko', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+};
+
 function PostForm() {
   const params = useParams();
   const navigate = useNavigate();
@@ -35,7 +43,7 @@ function PostForm() {
           title,
           summary,
           content,
-          updatedAt: new Date().toLocaleDateString(),
+          updatedAt: getCurrentFormattedDate(),
         });
 
         toast.success('게시물이 성공적으로 수정되었습니다.');
@@ -46,7 +54,7 @@ function PostForm() {
           title,
           summary,
           content,
-          createdAt: new Date().toLocaleDateString(),
+          createdAt: getCurrentFormattedDate(),
           email: auth.currentUser?.email,
         });
 
