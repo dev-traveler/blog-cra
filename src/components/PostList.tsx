@@ -63,7 +63,7 @@ function PostList({
 
   useEffect(() => {
     getPosts();
-  }, []);
+  }, [activeTab]);
 
   return (
     <>
