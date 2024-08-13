@@ -1,42 +1,61 @@
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from 'firebaseApp';
+
+import { Post } from './PostList';
 
 function PostDetail() {
+  const params = useParams();
+  const [post, setPost] = useState<Post | null>(null);
+
+  const getPost = async (id: string) => {
+    const docRef = doc(db, 'posts', id);
+    const docSnap = await getDoc(docRef);
+
+    setPost({ ...docSnap.data(), id: docSnap.id } as Post);
+  };
+
+  const handleDelete = () => {
+    console.log('delete');
+  };
+
+  useEffect(() => {
+    if (params.id) getPost(params.id);
+  }, [params.id]);
+
   return (
     <>
       <div className="post__detail">
-        <div className="post__box">
-          <div className="post__title">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo neque,
-            minus, assumenda magni rerum perferendis.
-          </div>
+        {post === null ? null : (
+          <div className="post__box">
+            <div className="post__title">{post.title}</div>
+            <div className="post__profile-box">
+              <div className="post__profile" />
+              <div className="post__author-name">{post.email}</div>
+              <div className="post__date">{post.createdAt}</div>
+            </div>
 
-          <div className="post__profile-box">
-            <div className="post__profile" />
-            <div className="post__author-name">dev_traveler</div>
-            <div className="post__date">2024.8.11 일요일</div>
-          </div>
+            {post.email === auth.currentUser?.email && (
+              <div className="post__utils-box">
+                <div
+                  role="presentation"
+                  className="post__delete"
+                  onClick={handleDelete}
+                >
+                  삭제
+                </div>
+                <div className="post__edit">
+                  <Link to="/posts/edit/1">수정</Link>
+                </div>
+              </div>
+            )}
 
-          <div className="post__utils-box">
-            <div className="post__delete">삭제</div>
-            <div className="post__edit">
-              <Link to="/posts/edit/1">수정</Link>
+            <div className="post__text post__text--pre-wrap">
+              {post.content}
             </div>
           </div>
-
-          <div className="post__text">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione
-            dolore vero aut amet exercitationem! Sapiente delectus, officia vero
-            quam tenetur nemo iure reiciendis ipsa in cupiditate veritatis,
-            dolores laborum minima. Lorem ipsum dolor sit amet consectetur
-            adipisicing elit. Ratione dolore vero aut amet exercitationem!
-            Sapiente delectus, officia vero quam tenetur nemo iure reiciendis
-            ipsa in cupiditate veritatis, dolores laborum minima. Lorem ipsum
-            dolor sit amet consectetur adipisicing elit. Ratione dolore vero aut
-            amet exercitationem! Sapiente delectus, officia vero quam tenetur
-            nemo iure reiciendis ipsa in cupiditate veritatis, dolores laborum
-            minima.
-          </div>
-        </div>
+        )}
       </div>
     </>
   );
