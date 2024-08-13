@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from 'firebaseApp';
 
-import { Post } from './PostList';
+import { Post } from 'interfaces/Post';
 
 function PostDetail() {
   const params = useParams();
@@ -46,7 +46,7 @@ function PostDetail() {
                   삭제
                 </div>
                 <div className="post__edit">
-                  <Link to="/posts/edit/1">수정</Link>
+                  <Link to={`/posts/edit/${post.id}`}>수정</Link>
                 </div>
               </div>
             )}

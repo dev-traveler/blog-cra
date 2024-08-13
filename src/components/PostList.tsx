@@ -3,14 +3,7 @@ import { auth, db } from 'firebaseApp';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-export interface Post {
-  id: string;
-  title: string;
-  email: string;
-  summary: string;
-  content: string;
-  createdAt: string;
-}
+import { Post } from 'interfaces/Post';
 
 function PostList() {
   const [posts, setPosts] = useState<Post[]>([]);
