@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { deleteDoc, doc, getDoc } from 'firebase/firestore';
 import { auth, db } from 'firebaseApp';
+import { toast } from 'react-toastify';
 
 import { Post } from 'interfaces/Post';
 
 function PostDetail() {
   const params = useParams();
+  const navigate = useNavigate();
+
   const [post, setPost] = useState<Post | null>(null);
 
   const getPost = async (id: string) => {
@@ -16,8 +19,14 @@ function PostDetail() {
     setPost({ ...docSnap.data(), id: docSnap.id } as Post);
   };
 
-  const handleDelete = () => {
-    console.log('delete');
+  const handleDelete = async () => {
+    const confirm = window.confirm('정말 삭제하시겠습니까?');
+
+    if (confirm && post) {
+      await deleteDoc(doc(db, 'posts', post.id));
+      toast.success('게시물이 성공적으로 삭제되었습니다.');
+      navigate('/');
+    }
   };
 
   useEffect(() => {
