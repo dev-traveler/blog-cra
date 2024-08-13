@@ -1,15 +1,20 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { addDoc, collection } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { addDoc, collection, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from 'firebaseApp';
 import { toast } from 'react-toastify';
 
+import { Post } from 'interfaces/Post';
+
 function PostForm() {
+  const params = useParams();
   const navigate = useNavigate();
 
   const [title, setTitle] = useState('');
   const [summary, setSummary] = useState('');
   const [content, setContent] = useState('');
+
+  const [post, setPost] = useState<Post | null>(null);
 
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -24,16 +29,30 @@ function PostForm() {
     e.preventDefault();
 
     try {
-      await addDoc(collection(db, 'posts'), {
-        title,
-        summary,
-        content,
-        createdAt: new Date().toLocaleDateString(),
-        email: auth.currentUser?.email,
-      });
+      if (post) {
+        const postRef = doc(db, 'posts', post.id);
+        await updateDoc(postRef, {
+          title,
+          summary,
+          content,
+          updatedAt: new Date().toLocaleDateString(),
+        });
 
-      toast.success('게시물이 성공적으로 작성되었습니다.');
-      navigate('/');
+        toast.success('게시물이 성공적으로 수정되었습니다.');
+        navigate(`/posts/${post.id}`);
+      } else {
+        await addDoc(collection(db, 'posts'), {
+          uid: auth.currentUser?.uid,
+          title,
+          summary,
+          content,
+          createdAt: new Date().toLocaleDateString(),
+          email: auth.currentUser?.email,
+        });
+
+        toast.success('게시물이 성공적으로 작성되었습니다.');
+        navigate('/');
+      }
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
@@ -42,6 +61,25 @@ function PostForm() {
       }
     }
   };
+
+  const getPost = async (id: string) => {
+    const docRef = doc(db, 'posts', id);
+    const docSnap = await getDoc(docRef);
+
+    setPost({ ...docSnap.data(), id: docSnap.id } as Post);
+  };
+
+  useEffect(() => {
+    if (params.id) getPost(params.id);
+  }, [params.id]);
+
+  useEffect(() => {
+    if (post) {
+      setTitle(post.title);
+      setSummary(post.summary);
+      setContent(post.content);
+    }
+  }, [post]);
 
   return (
     <form className="form" onSubmit={onSubmit}>
@@ -81,7 +119,11 @@ function PostForm() {
       </div>
 
       <div className="form__block">
-        <input type="submit" value="제출" className="form__btn--submit" />
+        <input
+          type="submit"
+          value={post ? '수정' : '제출'}
+          className="form__btn--submit"
+        />
       </div>
     </form>
   );
