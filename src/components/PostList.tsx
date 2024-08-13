@@ -1,7 +1,8 @@
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
 import { auth, db } from 'firebaseApp';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import { Post } from 'interfaces/Post';
 
@@ -10,11 +11,22 @@ function PostList() {
 
   const getPosts = async () => {
     const data = await getDocs(collection(db, 'posts'));
+    setPosts([]);
 
     data.forEach((doc) => {
       const dataObj = { ...doc.data(), id: doc.id } as Post;
       setPosts((prev) => [...prev, dataObj]);
     });
+  };
+
+  const handleDelete = async (postId: string) => {
+    const confirm = window.confirm('정말 삭제하시겠습니까?');
+
+    if (confirm) {
+      await deleteDoc(doc(db, 'posts', postId));
+      toast.success('게시물이 성공적으로 삭제되었습니다.');
+      getPosts();
+    }
   };
 
   useEffect(() => {
@@ -41,7 +53,13 @@ function PostList() {
 
               {post.email === auth.currentUser?.email && (
                 <div className="post__utils-box">
-                  <div className="post__delete">삭제</div>
+                  <div
+                    role="presentation"
+                    className="post__delete"
+                    onClick={() => handleDelete(post.id)}
+                  >
+                    삭제
+                  </div>
                   <Link to={`/posts/edit/${post.id}`} className="post__edit">
                     수정
                   </Link>
