@@ -18,10 +18,14 @@ type TabType = 'all' | 'my';
 
 interface PostListProps {
   hasNavigation?: boolean;
+  defaultTab?: TabType;
 }
 
-function PostList({ hasNavigation = false }: PostListProps) {
-  const [activeTab, setActiveTab] = useState<TabType>('all');
+function PostList({
+  hasNavigation = false,
+  defaultTab = 'all',
+}: PostListProps) {
+  const [activeTab, setActiveTab] = useState<TabType>(defaultTab);
   const [posts, setPosts] = useState<Post[]>([]);
 
   const getPosts = async () => {

@@ -8,7 +8,7 @@ function ProfilePage() {
     <>
       <Header />
       <Profile />
-      <PostList />
+      <PostList defaultTab="my" />
       <Footer />
     </>
   );
