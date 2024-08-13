@@ -1,4 +1,11 @@
-import { collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+} from 'firebase/firestore';
 import { auth, db } from 'firebaseApp';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -10,8 +17,11 @@ function PostList() {
   const [posts, setPosts] = useState<Post[]>([]);
 
   const getPosts = async () => {
-    const data = await getDocs(collection(db, 'posts'));
     setPosts([]);
+
+    const postsRef = collection(db, 'posts');
+    const postQuery = query(postsRef, orderBy('createdAt', 'asc'));
+    const data = await getDocs(postQuery);
 
     data.forEach((doc) => {
       const dataObj = { ...doc.data(), id: doc.id } as Post;
