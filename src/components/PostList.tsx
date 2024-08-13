@@ -5,6 +5,7 @@ import {
   getDocs,
   orderBy,
   query,
+  where,
 } from 'firebase/firestore';
 import { auth, db } from 'firebaseApp';
 import { useEffect, useState } from 'react';
@@ -27,9 +28,19 @@ function PostList({ hasNavigation = false }: PostListProps) {
     setPosts([]);
 
     const postsRef = collection(db, 'posts');
-    const postQuery = query(postsRef, orderBy('createdAt', 'asc'));
-    const data = await getDocs(postQuery);
+    let postsQuery;
 
+    if (activeTab === 'my') {
+      postsQuery = query(
+        postsRef,
+        where('uid', '==', auth.currentUser?.uid),
+        orderBy('createdAt', 'asc'),
+      );
+    } else {
+      postsQuery = query(postsRef, orderBy('createdAt', 'asc'));
+    }
+
+    const data = await getDocs(postsQuery);
     data.forEach((doc) => {
       const dataObj = { ...doc.data(), id: doc.id } as Post;
       setPosts((prev) => [...prev, dataObj]);
