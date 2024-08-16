@@ -1,3 +1,5 @@
+import { Category } from './Category';
+
 export interface Post {
   id: string;
   uid: string;
@@ -7,4 +9,5 @@ export interface Post {
   content: string;
   createdAt: string;
   updatedAt: string;
+  category: Category;
 }
