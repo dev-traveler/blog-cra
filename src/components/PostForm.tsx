@@ -5,6 +5,7 @@ import { auth, db } from 'firebaseApp';
 import { toast } from 'react-toastify';
 
 import { Post } from 'interfaces/Post';
+import { CATEGORIES, Category } from 'interfaces/Category';
 
 const getCurrentFormattedDate = () => {
   return new Date().toLocaleDateString('ko', {
@@ -19,16 +20,20 @@ function PostForm() {
   const navigate = useNavigate();
 
   const [title, setTitle] = useState('');
+  const [category, setCategory] = useState<Category>('Frontend');
   const [summary, setSummary] = useState('');
   const [content, setContent] = useState('');
 
   const [post, setPost] = useState<Post | null>(null);
 
   const onChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value } = e.target;
     if (name === 'content') setContent(value);
+    if (name === 'category') setCategory(value as Category);
     if (name === 'summary') setSummary(value);
     if (name === 'title') setTitle(value);
   };
@@ -41,6 +46,7 @@ function PostForm() {
         const postRef = doc(db, 'posts', post.id);
         await updateDoc(postRef, {
           title,
+          category,
           summary,
           content,
           updatedAt: getCurrentFormattedDate(),
@@ -52,6 +58,7 @@ function PostForm() {
         await addDoc(collection(db, 'posts'), {
           uid: auth.currentUser?.uid,
           title,
+          category,
           summary,
           content,
           createdAt: getCurrentFormattedDate(),
@@ -84,6 +91,7 @@ function PostForm() {
   useEffect(() => {
     if (post) {
       setTitle(post.title);
+      setCategory(post.category);
       setSummary(post.summary);
       setContent(post.content);
     }
@@ -101,6 +109,23 @@ function PostForm() {
           value={title}
           onChange={onChange}
         />
+      </div>
+
+      <div className="form__block">
+        <label htmlFor="category">카테고리</label>
+        <select
+          name="category"
+          id="category"
+          onChange={onChange}
+          defaultValue={category}
+        >
+          <option value="">카테고리를 선택해주세요</option>
+          {CATEGORIES.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="form__block">

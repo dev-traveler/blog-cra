@@ -47,6 +47,9 @@ function PostDetail() {
 
             {post.email === auth.currentUser?.email && (
               <div className="post__utils-box">
+                {post.category && (
+                  <div className="post__category">{post.category}</div>
+                )}
                 <div
                   role="presentation"
                   className="post__delete"

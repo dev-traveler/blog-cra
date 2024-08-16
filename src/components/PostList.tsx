@@ -13,19 +13,19 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { Post } from 'interfaces/Post';
-
-type TabType = 'all' | 'my';
+import { CATEGORIES } from 'interfaces/Category';
+import { PostTab } from 'interfaces/PostTab';
 
 interface PostListProps {
   hasNavigation?: boolean;
-  defaultTab?: TabType;
+  defaultTab?: PostTab;
 }
 
 function PostList({
   hasNavigation = false,
   defaultTab = 'all',
 }: PostListProps) {
-  const [activeTab, setActiveTab] = useState<TabType>(defaultTab);
+  const [activeTab, setActiveTab] = useState<PostTab>(defaultTab);
   const [posts, setPosts] = useState<Post[]>([]);
 
   const getPosts = async () => {
@@ -34,14 +34,21 @@ function PostList({
     const postsRef = collection(db, 'posts');
     let postsQuery;
 
-    if (activeTab === 'my') {
+    if (activeTab === 'all') {
+      postsQuery = query(postsRef, orderBy('createdAt', 'asc'));
+    } else if (activeTab === 'my') {
       postsQuery = query(
         postsRef,
         where('uid', '==', auth.currentUser?.uid),
         orderBy('createdAt', 'asc'),
       );
     } else {
-      postsQuery = query(postsRef, orderBy('createdAt', 'asc'));
+      // 카테고리별로 게시글을 가져오기 위한 쿼리
+      postsQuery = query(
+        postsRef,
+        where('category', '==', activeTab),
+        orderBy('createdAt', 'asc'),
+      );
     }
 
     const data = await getDocs(postsQuery);
@@ -83,6 +90,18 @@ function PostList({
           >
             나의 글
           </div>
+          {CATEGORIES.map((category) => (
+            <div
+              key={category}
+              role="presentation"
+              className={
+                activeTab === category ? 'post__navigation--active' : ''
+              }
+              onClick={() => setActiveTab(category)}
+            >
+              {category}
+            </div>
+          ))}
         </div>
       )}
       <div className="post__list">
