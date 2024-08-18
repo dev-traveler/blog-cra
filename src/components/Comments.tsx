@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { Post } from 'interfaces/Post';
-import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import { auth, db } from 'firebaseApp';
-import { getCurrentFormattedDate } from './PostForm';
 import { toast } from 'react-toastify';
+
+import { Post } from 'interfaces/Post';
+import { Comment } from 'interfaces/Comment';
+import { getCurrentFormattedDate } from './PostForm';
 
 interface CommentProps {
   post: Post;
@@ -52,6 +54,29 @@ export default function Comments({ post, getPost }: CommentProps) {
     }
   };
 
+  const handleDelete = async (data: Comment) => {
+    const confirm = window.confirm('정말로 삭제하시겠습니까?');
+    if (!confirm) return;
+
+    try {
+      const postRef = doc(db, 'posts', post.id);
+
+      await updateDoc(postRef, {
+        comments: arrayRemove(data),
+        updatedAt: getCurrentFormattedDate(),
+      });
+      await getPost();
+
+      toast.success('댓글이 성공적으로 삭제되었습니다.');
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        console.error(error);
+      }
+    }
+  };
+
   return (
     <div className="comments">
       <form className="comments__form" onSubmit={onSubmit}>
@@ -78,7 +103,14 @@ export default function Comments({ post, getPost }: CommentProps) {
               <div className="comment__profile-box">
                 <div className="comment__email">{comment.email}</div>
                 <div className="comment__date">{comment.createdAt}</div>
-                <div className="comment__delete">삭제</div>
+                {comment.uid === auth.currentUser?.uid && (
+                  <div
+                    className="comment__delete"
+                    onClick={() => handleDelete(comment)}
+                  >
+                    삭제
+                  </div>
+                )}
               </div>
               <div className="comment__text">{comment.content}</div>
             </div>
