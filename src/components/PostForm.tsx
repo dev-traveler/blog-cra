@@ -63,6 +63,7 @@ function PostForm() {
           content,
           createdAt: getCurrentFormattedDate(),
           email: auth.currentUser?.email,
+          comments: [],
         });
 
         toast.success('게시물이 성공적으로 작성되었습니다.');
