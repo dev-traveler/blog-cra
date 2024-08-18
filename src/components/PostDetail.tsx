@@ -5,6 +5,7 @@ import { auth, db } from 'firebaseApp';
 import { toast } from 'react-toastify';
 
 import { Post } from 'interfaces/Post';
+import Comments from './Comments';
 
 function PostDetail() {
   const params = useParams();
@@ -37,36 +38,39 @@ function PostDetail() {
     <>
       <div className="post__detail">
         {post === null ? null : (
-          <div className="post__box">
-            <div className="post__title">{post.title}</div>
-            <div className="post__profile-box">
-              <div className="post__profile" />
-              <div className="post__author-name">{post.email}</div>
-              <div className="post__date">{post.createdAt}</div>
-            </div>
-
-            {post.email === auth.currentUser?.email && (
-              <div className="post__utils-box">
-                {post.category && (
-                  <div className="post__category">{post.category}</div>
-                )}
-                <div
-                  role="presentation"
-                  className="post__delete"
-                  onClick={handleDelete}
-                >
-                  삭제
-                </div>
-                <div className="post__edit">
-                  <Link to={`/posts/edit/${post.id}`}>수정</Link>
-                </div>
+          <>
+            <div className="post__box">
+              <div className="post__title">{post.title}</div>
+              <div className="post__profile-box">
+                <div className="post__profile" />
+                <div className="post__author-name">{post.email}</div>
+                <div className="post__date">{post.createdAt}</div>
               </div>
-            )}
 
-            <div className="post__text post__text--pre-wrap">
-              {post.content}
+              {post.email === auth.currentUser?.email && (
+                <div className="post__utils-box">
+                  {post.category && (
+                    <div className="post__category">{post.category}</div>
+                  )}
+                  <div
+                    role="presentation"
+                    className="post__delete"
+                    onClick={handleDelete}
+                  >
+                    삭제
+                  </div>
+                  <div className="post__edit">
+                    <Link to={`/posts/edit/${post.id}`}>수정</Link>
+                  </div>
+                </div>
+              )}
+
+              <div className="post__text post__text--pre-wrap">
+                {post.content}
+              </div>
             </div>
-          </div>
+            <Comments post={post} />
+          </>
         )}
       </div>
     </>
