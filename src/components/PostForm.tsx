@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { Post } from 'interfaces/Post';
 import { CATEGORIES, Category } from 'interfaces/Category';
 
-const getCurrentFormattedDate = () => {
+export const getCurrentFormattedDate = () => {
   return new Date().toLocaleDateString('ko', {
     hour: '2-digit',
     minute: '2-digit',

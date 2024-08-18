@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import { Post } from 'interfaces/Post';
+import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
+import { auth, db } from 'firebaseApp';
+import { getCurrentFormattedDate } from './PostForm';
+import { toast } from 'react-toastify';
 
 const COMMENTS = [
   {
@@ -65,6 +69,30 @@ export default function Comments({ post }: CommentProps) {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    try {
+      const postRef = doc(db, 'posts', post.id);
+      const commentObj = {
+        content: comment,
+        uid: auth.currentUser?.uid,
+        email: auth.currentUser?.email,
+        createdAt: getCurrentFormattedDate(),
+      };
+
+      await updateDoc(postRef, {
+        comments: arrayUnion(commentObj),
+        updatedAt: getCurrentFormattedDate(),
+      });
+
+      toast.success('댓글이 성공적으로 작성되었습니다.');
+      setComment('');
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        console.error(error);
+      }
+    }
   };
 
   return (
