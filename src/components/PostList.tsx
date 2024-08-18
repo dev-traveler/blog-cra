@@ -8,7 +8,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { auth, db } from 'firebaseApp';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -28,7 +28,7 @@ function PostList({
   const [activeTab, setActiveTab] = useState<PostTab>(defaultTab);
   const [posts, setPosts] = useState<Post[]>([]);
 
-  const getPosts = async () => {
+  const getPosts = useCallback(async () => {
     setPosts([]);
 
     const postsRef = collection(db, 'posts');
@@ -56,7 +56,7 @@ function PostList({
       const dataObj = { ...doc.data(), id: doc.id } as Post;
       setPosts((prev) => [...prev, dataObj]);
     });
-  };
+  }, [activeTab]);
 
   const handleDelete = async (postId: string) => {
     const confirm = window.confirm('정말 삭제하시겠습니까?');
@@ -70,7 +70,7 @@ function PostList({
 
   useEffect(() => {
     getPosts();
-  }, [activeTab]);
+  }, [getPosts]);
 
   return (
     <>
