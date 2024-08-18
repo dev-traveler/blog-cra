@@ -1,4 +1,5 @@
 import { Category } from './Category';
+import { Comment } from './Comment';
 
 export interface Post {
   id: string;
@@ -10,4 +11,5 @@ export interface Post {
   createdAt: string;
   updatedAt: string;
   category: Category;
+  comments: Comment[];
 }
