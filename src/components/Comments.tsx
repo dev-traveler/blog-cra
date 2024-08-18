@@ -5,56 +5,12 @@ import { auth, db } from 'firebaseApp';
 import { getCurrentFormattedDate } from './PostForm';
 import { toast } from 'react-toastify';
 
-const COMMENTS = [
-  {
-    id: 1,
-    email: 'test@test.com',
-    content: '댓글입니다 1',
-    createdAt: '2023-07-13',
-  },
-  {
-    id: 2,
-    email: 'test@test.com',
-    content: '댓글입니다 2',
-    createdAt: '2023-07-13',
-  },
-  {
-    id: 3,
-    email: 'test@test.com',
-    content: '댓글입니다 3',
-    createdAt: '2023-07-13',
-  },
-  {
-    id: 4,
-    email: 'test@test.com',
-    content: '댓글입니다 4',
-    createdAt: '2023-07-13',
-  },
-  {
-    id: 5,
-    email: 'test@test.com',
-    content: '댓글입니다 5',
-    createdAt: '2023-07-13',
-  },
-  {
-    id: 6,
-    email: 'test@test.com',
-    content: '댓글입니다 6',
-    createdAt: '2023-07-13',
-  },
-  {
-    id: 7,
-    email: 'test@test.com',
-    content: '댓글입니다 7',
-    createdAt: '2023-07-13',
-  },
-];
-
 interface CommentProps {
   post: Post;
+  getPost: () => Promise<void>;
 }
 
-export default function Comments({ post }: CommentProps) {
+export default function Comments({ post, getPost }: CommentProps) {
   const [comment, setComment] = useState('');
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -83,6 +39,7 @@ export default function Comments({ post }: CommentProps) {
         comments: arrayUnion(commentObj),
         updatedAt: getCurrentFormattedDate(),
       });
+      await getPost();
 
       toast.success('댓글이 성공적으로 작성되었습니다.');
       setComment('');
@@ -113,16 +70,19 @@ export default function Comments({ post }: CommentProps) {
         </div>
       </form>
       <div className="comments__list">
-        {COMMENTS?.map((comment) => (
-          <div key={comment.id} className="comment__box">
-            <div className="comment__profile-box">
-              <div className="comment__email">{comment?.email}</div>
-              <div className="comment__date">{comment?.createdAt}</div>
-              <div className="comment__delete">삭제</div>
+        {post.comments
+          .slice(0)
+          .reverse()
+          .map((comment) => (
+            <div key={comment.createdAt} className="comment__box">
+              <div className="comment__profile-box">
+                <div className="comment__email">{comment.email}</div>
+                <div className="comment__date">{comment.createdAt}</div>
+                <div className="comment__delete">삭제</div>
+              </div>
+              <div className="comment__text">{comment.content}</div>
             </div>
-            <div className="comment__text">{comment?.content}</div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );
